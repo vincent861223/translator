@@ -1,0 +1,25 @@
+dataset:
+  data_file: 'cmn.txt'
+  lang1_name: 'English'
+  lang2_name: 'Chinese'
+
+train: 
+  batch_size: 32
+  n_epochs: 3000
+  lr: 0.01
+
+encoder:
+  emb_size: 512
+  hidden_size: 512
+  rnn_cell: 'GRU'
+  padding_idx: 0
+  bidirectional: False
+  n_layers: 1
+
+decoder:
+  emb_size: 512
+  hidden_size: 512
+  rnn_cell: 'GRU'
+  padding_idx: 0
+  bidirectional: False
+  n_layers: 1
