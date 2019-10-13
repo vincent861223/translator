@@ -4,6 +4,7 @@ dataset:
   lang2_name: 'Chinese'
 
 train: 
+  device: cpu
   batch_size: 32
   n_epochs: 3000
   lr: 0.01

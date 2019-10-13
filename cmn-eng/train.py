@@ -10,11 +10,12 @@ import random
 
 from tensorboardX import SummaryWriter
 
-device = 'cuda:0' if torch.cuda.is_available() else 'cpu' 
+global device
 
 def train(config):
 	train_config = config['train']
 	
+	device = train_config['device']
 	tqdm.write('Training on {}'.format(device))
 	writer = SummaryWriter('log')
 
