@@ -10,11 +10,12 @@ import random
 
 from tensorboardX import SummaryWriter
 
-global device
+device = ''
 
 def train(config):
 	train_config = config['train']
-	
+
+	global device
 	device = train_config['device']
 	tqdm.write('Training on {}'.format(device))
 	writer = SummaryWriter('log')
@@ -86,6 +87,7 @@ def hitRate(decoder_output, target_eos):
 	return n_hit, n_total
 
 def sample(dataset, encoder, decoder):
+	global device
 	rand_idx = random.randint(0, len(dataset)-1)
 	data = dataset[rand_idx]
 	source, target_bos, target_eos = data['indexed']
