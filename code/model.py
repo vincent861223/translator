@@ -15,7 +15,7 @@ class Encoder(nn.Module):
 		self.n_init = (2 if bidirectional == True else 1) * n_layers
 
 		self.embedding = nn.Embedding(vocab_size, emb_size, padding_idx=0)
-		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True, dropout=dropout)
+		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True, dropout=dropout, num_layers=n_layers)
 
 	def forward(self, source):
 		# source: (batch, seq_len)
@@ -43,7 +43,7 @@ class Decoder(nn.Module):
 		self.softmax = nn.LogSoftmax(dim=-1)
 		self.embedding = nn.Embedding(vocab_size, emb_size, padding_idx=0)
 		self.linear = nn.Linear(hidden_size, vocab_size)
-		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True, dropout=0.2)
+		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True, dropout=0.2, num_layers=n_layers)
 
 	def forward(self, input, init_hidden):
 		# source: (batch, seq_len)
