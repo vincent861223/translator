@@ -3,6 +3,19 @@ from tqdm import tqdm
 import yaml
 
 def read_datafile(filename, mode='train'):
+	"""
+	Usage: Read datafile from 'filename' and tokenize each sentence into a list of words 
+	Return: 
+		pairs: a pair of a sentence and its corresponding translation 
+				Ex. pairs = [
+								[['How', 'are', 'you', '?'], ['我', '很', '好']],
+								[['Hi', '.'], ['嗨', '。']]
+								.
+								.
+								.
+								[['Goodbye', '!'], ['再', '見']]
+							]
+	"""
 	with open(filename) as f:
 		lines = f.read().split('\n')
 		if mode =='train': lines = lines[:-len(lines)//10]
@@ -18,9 +31,16 @@ def read_datafile(filename, mode='train'):
 	return pairs 
 
 def read_config():
+	"""
+	Read config file and return a dict.
+	Return: dict
+	"""
 	with open('config.yaml') as f:
 		config = yaml.load(f)
 	return config
 
 def tokenize(sentence):
 	return [w for w in sentence]
+
+
+

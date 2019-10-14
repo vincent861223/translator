@@ -1,10 +1,10 @@
 dataset:
-  data_file: 'cmn.txt'
+  data_file: '../data/cmn.txt'
   lang1_name: 'English'
   lang2_name: 'Chinese'
 
 train: 
-device: 'cuda:3'
+  device: 'cuda:3'
   batch_size: 32
   n_epochs: 3000
   lr: 0.01

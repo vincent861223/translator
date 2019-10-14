@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 class Encoder(nn.Module):
-	def __init__(self, vocab_size, emb_size, hidden_size, rnn_cell='GRU', padding_idx=0, bidirectional=False, n_layers=1, device='cpu', dropout=0.2):
+	def __init__(self, vocab_size, emb_size, hidden_size, rnn_cell='GRU', padding_idx=0, bidirectional=False, n_layers=1, dropout=0.2, device='cpu'):
 		super(Encoder, self).__init__()
 		self.vocab_size = vocab_size
 		self.emb_size = emb_size
@@ -10,12 +10,12 @@ class Encoder(nn.Module):
 		self.padding_idx = padding_idx
 		self.bidirectional = bidirectional
 		self.n_layers = n_layers
+		self.dropout = dropout
 		self.device = device
 		self.n_init = (2 if bidirectional == True else 1) * n_layers
 
-
 		self.embedding = nn.Embedding(vocab_size, emb_size, padding_idx=0)
-		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True)
+		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True, dropout=dropout)
 
 	def forward(self, source):
 		# source: (batch, seq_len)
@@ -26,7 +26,7 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-	def __init__(self, vocab_size, emb_size, hidden_size, rnn_cell='GRU', padding_idx=0, bidirectional=False, n_layers=1, device='cpu'):
+	def __init__(self, vocab_size, emb_size, hidden_size, rnn_cell='GRU', padding_idx=0, bidirectional=False, n_layers=1, dropout=0.2, device='cpu'):
 		super(Decoder, self).__init__()
 		self.vocab_size = vocab_size
 		self.emb_size = emb_size
@@ -35,6 +35,7 @@ class Decoder(nn.Module):
 		self.padding_idx = padding_idx
 		self.bidirectional = bidirectional
 		self.n_layers = n_layers
+		self.dropout = dropout
 		self.device = device
 		self.n_init = (2 if bidirectional == True else 1) * n_layers
 
@@ -42,7 +43,7 @@ class Decoder(nn.Module):
 		self.softmax = nn.LogSoftmax(dim=-1)
 		self.embedding = nn.Embedding(vocab_size, emb_size, padding_idx=0)
 		self.linear = nn.Linear(hidden_size, vocab_size)
-		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True)
+		if rnn_cell == 'GRU': self.rnn = nn.GRU(emb_size, hidden_size, batch_first=True, dropout=0.2)
 
 	def forward(self, input, init_hidden):
 		# source: (batch, seq_len)

@@ -17,6 +17,7 @@ def train(config):
 
 	global device
 	device = train_config['device']
+	if not torch.cuda.is_available(): device = 'cpu'
 	tqdm.write('Training on {}'.format(device))
 	writer = SummaryWriter('log')
 
@@ -39,6 +40,8 @@ def train(config):
 	epoch_bar = tqdm(range(train_config['n_epochs']), desc='[Total progress]', leave=True, position=0, dynamic_ncols=True)
 	for epoch in epoch_bar:
 		batch_bar = tqdm(range(len(train_dataloader)), desc='[Train epoch {:2}]'.format(epoch), leave=True, position=0, dynamic_ncols=True)
+		encoder.train()
+		decoder.train()
 		for batch in batch_bar:
 			(source, target_bos, target_eos) = next(iter(train_dataloader))
 			encoder_optimizer.zero_grad()
@@ -60,6 +63,8 @@ def train(config):
 		writer.add_scalar('train_loss', loss.item(), epoch)
 
 		batch_bar = tqdm(range(len(test_dataloader)), desc='[Test epoch {:2}]'.format(epoch), leave=True, position=0, dynamic_ncols=True)
+		encoder.eval()
+		decoder.eval()
 		for batch in batch_bar:
 			(source, target_bos, target_eos) = next(iter(test_dataloader))
 			source, target_bos, target_eos = source.to(device), target_bos.to(device), target_eos.to(device)
