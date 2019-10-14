@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 class Encoder(nn.Module):
-	def __init__(self, vocab_size, emb_size, hidden_size, rnn_cell='GRU', padding_idx=0, bidirectional=False, n_layers=1, device='cpu'):
+	def __init__(self, vocab_size, emb_size, hidden_size, rnn_cell='GRU', padding_idx=0, bidirectional=False, n_layers=1, device='cpu', dropout=0.2):
 		super(Encoder, self).__init__()
 		self.vocab_size = vocab_size
 		self.emb_size = emb_size
