@@ -1,6 +1,6 @@
 from utils import read_config
 from model import Encoder, Decoder
-from dataset import SentencePairDataset, collate_fn
+from dataset import collate_fn, create_datasets
 from torch.utils.data import DataLoader
 import torch.optim as optim
 import torch.nn as nn
@@ -21,8 +21,7 @@ def train(config):
 	tqdm.write('Training on {}'.format(device))
 	writer = SummaryWriter('log')
 
-	train_dataset = SentencePairDataset(**config['dataset'], mode='train')
-	test_dataset  = SentencePairDataset(**config['dataset'], mode='test')
+	train_dataset, test_dataset = create_datasets(**config['dataset'])
 
 	train_dataloader = DataLoader(train_dataset, batch_size=train_config['batch_size'], shuffle=True, collate_fn=collate_fn)
 	test_dataloader = DataLoader(test_dataset, batch_size=train_config['batch_size'], shuffle=False, collate_fn=collate_fn)

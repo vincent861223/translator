@@ -2,6 +2,9 @@ dataset:
   data_file: '../data/cmn.txt'
   lang1_name: 'English'
   lang2_name: 'Chinese'
+  max_len: 10
+  percentage: 0.1
+  
 
 train: 
   device: 'cuda:3'

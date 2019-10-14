@@ -2,7 +2,7 @@ from nltk import word_tokenize
 from tqdm import tqdm
 import yaml
 
-def read_datafile(filename, mode='train'):
+def read_datafile(filename):
 	"""
 	Usage: Read datafile from 'filename' and tokenize each sentence into a list of words 
 	Return: 
@@ -18,10 +18,8 @@ def read_datafile(filename, mode='train'):
 	"""
 	with open(filename) as f:
 		lines = f.read().split('\n')
-		if mode =='train': lines = lines[:-len(lines)//10]
-		elif mode == 'test': lines = lines[-len(lines)//10:]
 		pairs = []
-		tqdm.write('Loading {} corpus from {} ...'.format(mode + 'ing', filename))
+		tqdm.write('Loading corpus from {} ...'.format(filename))
 		lines = tqdm(lines, desc='Tokenizing sentences', leave=False, dynamic_ncols=True)
 		for line in lines:
 			pair = line.split('\t')
