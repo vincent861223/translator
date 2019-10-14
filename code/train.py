@@ -30,8 +30,8 @@ def train(config):
 	encoder = Encoder(vocab_size=len(train_dataset.lang1), **config['encoder'], device=device).to(device)
 	decoder = Decoder(vocab_size=len(train_dataset.lang2), **config['decoder']).to(device)
 
-	encoder_optimizer = optim.SGD(encoder.parameters(), lr=train_config['lr'])
-	decoder_optimizer = optim.SGD(decoder.parameters(), lr=train_config['lr'])
+	encoder_optimizer = optim.Adam(encoder.parameters(), lr=train_config['lr'])
+	decoder_optimizer = optim.Adam(decoder.parameters(), lr=train_config['lr'])
 
 	criterion = nn.NLLLoss()
 
@@ -42,6 +42,7 @@ def train(config):
 		batch_bar = tqdm(range(len(train_dataloader)), desc='[Train epoch {:2}]'.format(epoch), leave=True, position=0, dynamic_ncols=True)
 		encoder.train()
 		decoder.train()
+		train_loss = 0
 		for batch in batch_bar:
 			(source, target_bos, target_eos) = next(iter(train_dataloader))
 			encoder_optimizer.zero_grad()
@@ -52,6 +53,7 @@ def train(config):
 			decoder_output = decoder(target_bos, encoder_hidden)
 
 			loss = criterion(decoder_output.view(-1, decoder_output.size(-1)), target_eos.view(-1))
+			train_loss += loss.item()
 			n_hit, n_total = hitRate(decoder_output, target_eos)
 			loss.backward()
 			#print(loss.item())
@@ -60,11 +62,12 @@ def train(config):
 			decoder_optimizer.step()
 			
 			batch_bar.set_description('[Train epoch {:2} | Loss: {:.2f} | Hit: {}/{}]'.format(epoch, loss, n_hit, n_total))
-		writer.add_scalar('train_loss', loss.item(), epoch)
+		train_loss /= len(train_dataloader)
 
 		batch_bar = tqdm(range(len(test_dataloader)), desc='[Test epoch {:2}]'.format(epoch), leave=True, position=0, dynamic_ncols=True)
 		encoder.eval()
 		decoder.eval()
+		test_loss = 0
 		for batch in batch_bar:
 			(source, target_bos, target_eos) = next(iter(test_dataloader))
 			source, target_bos, target_eos = source.to(device), target_bos.to(device), target_eos.to(device)
@@ -73,10 +76,12 @@ def train(config):
 				encoder_output, encoder_hidden = encoder(source)
 				decoder_output = decoder(target_bos, encoder_hidden)
 				loss = criterion(decoder_output.view(-1, decoder_output.size(-1)), target_eos.view(-1))
+				test_loss += loss.item()
 				n_hit, n_total = hitRate(decoder_output, target_eos)
 				batch_bar.set_description('[Test epoch {:2} | Loss: {:.2f} | Hit: {}/{}]'.format(epoch, loss, n_hit, n_total))
-
-		writer.add_scalar('test_loss', loss.item(), epoch)
+		
+		test_loss /= len(test_dataloader)
+		writer.add_scalars('Loss', {'train': train_loss, 'test': test_loss}, epoch)
 		sample(test_dataset, encoder, decoder)
 
 	tqdm.write('[-] Done!')

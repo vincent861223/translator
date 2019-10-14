@@ -16,6 +16,7 @@ encoder:
   padding_idx: 0
   bidirectional: False
   n_layers: 2
+  dropout: 0.5
 
 decoder:
   emb_size: 512
@@ -24,3 +25,4 @@ decoder:
   padding_idx: 0
   bidirectional: False
   n_layers: 2
+  dropout: 0.5
