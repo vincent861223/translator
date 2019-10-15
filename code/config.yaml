@@ -10,7 +10,7 @@ train:
   device: 'cuda:3'
   batch_size: 32
   n_epochs: 3000
-  lr: 0.01
+  lr: 0.001
 
 encoder:
   emb_size: 512
